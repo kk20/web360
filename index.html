@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Testing WebVR Polyfill!</title>
+    <meta name="description" content="Hello, World! - A-Frame">
+    <script src="https://aframe.io/releases/0.3.2/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+		<a-assets>
+			<img id= "fnatic" src= "fnatic.png">
+			<img id= "rekkles" src= "rekkles.jpg">
+			<img id= "bora" src= "bora.jpg">
+			<img id= "holoholoholo" src= "huni.jpg">
+			<img id= "reignover" src= "reignover.jpg">
+			<img id= "avr" src= "AVR.jpg">
+			<img id= "sr" src= "therift.jpg">
+		</a-assets>
+		<a-box id ="rekklesbox" color="#FFF" width="2" height="10" depth="2"
+         position="-5 2 -8" rotation="0 0 0" scale="2 0.5 1"
+         src="#rekkles"></a-box>
+		<a-box id ="yellowstarbox" color="#FFF" width="2" height="7" depth="2"
+         position="2 2 -5" rotation="0 -60 0" scale="2 0.5 1"
+         src="#bora"></a-box> 
+		<a-box id ="huni" color="#FFF" width="2" height="10" depth="2" position="5 2 15"
+         rotation="0 45 0" scale="2 0.5 1"
+         src="#holoholoholo"></a-box>
+		<a-camera look-controls-enabled= "true"></a-camera>	
+		<a-sky id ="fnaticbg" src="#fnatic" rotation "0 0 0"></a-sky>
+	</a-scene>
+  </body>
+</html>
