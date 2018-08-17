@@ -1,0 +1,33 @@
+;
+; Lab1.asm
+;
+; Created: 03-Aug-18 7:29:18 PM
+; Author : Karan
+;
+.include "m2560def.inc"
+.def multiplication_low = r0		; define a to be register r16
+.def multiplication_high = r1		; define b to be register r17
+.def counter = r17
+.def value = r18
+.def higher_sum = r21;
+.def lower_sum = r20;
+
+.macro power
+
+	mul lower_sum, value;
+	
+	mul higher_sum, value;
+
+
+.endmacro
+
+start:
+	
+	ldi counter, $04;
+	dec counter;
+	ldi value, $02;
+	adiw lower_sum, value;
+	
+end:
+	rjmp end ; Halt the processor execution
+    
