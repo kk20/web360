@@ -1,0 +1,59 @@
+;
+; Lab1Part2.asm
+;
+; Created: 10-Aug-18 8:09:40 PM
+; Author : Karan
+;
+
+.include "m2560def.inc"
+.def value =r17		; define b to be register r17
+.def highersum = r18 ; define highersum to be r18
+.def lowersum = r19 ; define lowersum to be r19
+.def temp_l = r20; define temporary register(Lower byte) to be r20
+.def temp_h = r21; define temporary register(Higher byte) to be r20
+.def temp_counter = r26;
+.def original_counter = r16;
+
+; macro to calculate the exponent of a number, i.e. a^b. Result will be stored in r1-r0 pair 
+.macro power
+
+; Part one of the multiplication process i.e. only squaring
+	
+	ldi temp_counter, $1; Load 1 into the temporary counter
+	
+	mov r0, value;
+	mul r0,value; Multiply the value with itself temp_h-temp_l
+	movw temp_l, r0
+	inc temp_counter; Decrement the counter	
+	
+; Part two of the multiplication process, i.e. higher order powers
+go:
+	cp temp_counter, @0 ; @0 is the value sent to the macro from the main program
+	breq end ; Branch to end if required power has been reached
+	mul value, temp_l; Multiply value with value in temp_l
+	movw r22, r0; Move word from r1-r0 to r21-r22 (Multiplication result)
+	mul value, temp_h; Multiply value with value in temp_h
+	mov temp_h, r0;
+	ldi temp_l, $0; ; Clear temp_l Register
+	add temp_l, r22; Add the lower byte of the multiplication
+	adc  temp_h, r23; Add (with carry) the higher byte of the multiplication
+	inc temp_counter; Decrement the counter
+	cp temp_counter, @0 ; Compare counter with 
+	brne go; Branch if not equal
+end:
+
+.endmacro
+
+start:
+		ldi original_counter, $03 ; Load immediate value 10 in decimal to counter register
+		ldi value, $02; Load immediate value 02 in decimal to value register
+loop:	
+		power original_counter ;Call macro
+		add lowersum, temp_l; Add the multiplication Higher bit to higher bit of sum
+		adc highersum, temp_h; Add the multiplication lower
+		dec original_counter; Decrement original counter
+		brbc 1,loop; branch if zero flag not set
+		;add lowersum, value; Add value to the lower bit of the sum
+		;adc highersum, r30; Add carry and 0 (r30 is uninitialized therefore 0)
+end:
+		rjmp end; Halt execution
