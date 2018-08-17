@@ -11,23 +11,31 @@
 .def value = r18
 .def higher_sum = r21;
 .def lower_sum = r20;
-
 .macro power
 
-	mul lower_sum, value;
-	
+loop:	mul lower_sum, value;
+	movw  r2, multiplication_low	
 	mul higher_sum, value;
-
-
+	add r3,r0;
+	movw lower_sum, r2; 
+	dec counter;
+	brbc 1,loop;
 .endmacro
+
+.macro subtraction
+
+.endmacro	
+
 
 start:
 	
 	ldi counter, $04;
-	dec counter;
+	;dec counter;
 	ldi value, $02;
-	adiw lower_sum, value;
-	
+	add lower_sum, value;
+	power 
+	subtraction
+
 end:
 	rjmp end ; Halt the processor execution
     
