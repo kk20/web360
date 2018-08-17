@@ -11,30 +11,48 @@
 .def value = r18
 .def higher_sum = r21;
 .def lower_sum = r20;
+
+
 .macro power
 
-loop:	mul lower_sum, value;
-	movw  r2, multiplication_low	
-	mul higher_sum, value;
-	add r3,r0;
-	movw lower_sum, r2; 
-	dec counter;
-	brbc 1,loop;
+loop:	mul lower_sum, value; multiply the lower byte
+	movw  r2, multiplication_low	; move word from r1-r0
+	mul higher_sum, value; multiply the higher byte
+	add r3,r0; add the reuslts
+	movw lower_sum, r2;  move the byte
+	dec counter; decrement counter
+	brbc 1,loop; branch if zero flag is not set
 .endmacro
 
 .macro subtraction
+		ldi counter, $1;
+ct: 	mul counter, value; reset r0, r1
+		cp lower_sum, multiplication_low; compare lower sum with lower product of multiplcation
+		cpc higher_sum, multiplication_high; compare with carry
+		brcs something ;branch if carry set to something
+		inc counter ; increment multiplier
+		rjmp ct ; jump
+something:
+		dec counter ;exceeded mulitplier reduce
+		mul counter, value ; multiply to get factor
+		sub lower_sum, multiplication_low; remove it out
+		sbc higher_sum, multiplication_high;	remove it out!!
 
 .endmacro	
 
 
 start:
 	
-	ldi counter, $04;
+	ldi counter, $04; load counter value
 	;dec counter;
-	ldi value, $02;
-	add lower_sum, value;
-	power 
-	subtraction
+	ldi value, $02; load number value
+	add lower_sum, value; add it for first power
+	power ; call power macro 
+	subi lower_sum, $01; for the series formula, decrement it by 1
+	sbc higher_sum, r30; same as above but reducing the word by 1 for carry
+	subtraction ; call subtraction macro, does division really
+	subi lower_sum, $01; below
+	sbc higher_sum, r30; to remove a^0
 
 end:
 	rjmp end ; Halt the processor execution
